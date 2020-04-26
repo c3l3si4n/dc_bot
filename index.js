@@ -303,7 +303,7 @@ function initBot() {
 
         return new Promise(async(resolve) => {
             let limit = 14983;
-            await (delay(1000))
+            await (delay(2000))
 
 
             let yaw_radian = degrees_to_radians(yaw);
@@ -318,10 +318,16 @@ function initBot() {
             let canDigBlock = bot.canDigBlock(block);
             let canDigBelowBlock = bot.canDigBlock(belowBlock);
             if (canDigBlock && check_limit(block.position)) {
+                await (delay(1000))
                 await dig_promise(block);
+                await (delay(1000))
+
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
+
                 await dig_promise(belowBlock);
+                await (delay(1000))
+
             }
 
 
@@ -334,10 +340,16 @@ function initBot() {
             canDigBlock = bot.canDigBlock(block) && check_limit(block.position) && block.type != 0;
             canDigBelowBlock = bot.canDigBlock(belowBlock) && check_limit(belowBlock.position) && block.material != 0;
             if (canDigBlock && check_limit(block.position)) {
+                await (delay(1000))
                 await dig_promise(block);
+                await (delay(1000))
+
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
+
                 await dig_promise(belowBlock);
+                await (delay(1000))
+
             }
 
             eval(singleDirectionMap[yaw]);
@@ -350,10 +362,16 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position)) {
+                await (delay(1000))
                 await dig_promise(block);
+                await (delay(1000))
+
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
+
                 await dig_promise(belowBlock);
+                await (delay(1000))
+
             }
 
             eval(singleDirectionMap[yaw]);
@@ -366,10 +384,16 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position)) {
+                await (delay(1000))
                 await dig_promise(block);
+                await (delay(1000))
+
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
+
                 await dig_promise(belowBlock);
+                await (delay(1000))
+
             }
 
 
@@ -559,14 +583,7 @@ function initBot() {
 
             console.log("Finished.")
         }).catch(() => {
-            process.on("exit", function() {
-                require("child_process").spawn(process.argv.shift(), process.argv, {
-                    cwd: process.cwd(),
-                    detached: true,
-                    stdio: "inherit"
-                });
-            });
-            process.exit();
+            branch_mining()
         });
 
 
