@@ -320,11 +320,9 @@ function initBot() {
             if (canDigBlock && check_limit(block.position)) {
                 await dig_promise(block);
             }
-            await (delay(400))
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
                 await dig_promise(belowBlock);
             }
-            await (delay(400))
 
 
             eval(singleDirectionMap[yaw]);
@@ -338,11 +336,9 @@ function initBot() {
             if (canDigBlock && check_limit(block.position)) {
                 await dig_promise(block);
             }
-            await (delay(400))
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
                 await dig_promise(belowBlock);
             }
-            await (delay(400))
 
             eval(singleDirectionMap[yaw]);
             block = await bot.blockAt(blockPosition);
@@ -356,11 +352,9 @@ function initBot() {
             if (canDigBlock && check_limit(block.position)) {
                 await dig_promise(block);
             }
-            await (delay(400))
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
                 await dig_promise(belowBlock);
             }
-            await (delay(400))
 
             eval(singleDirectionMap[yaw]);
             block = await bot.blockAt(blockPosition);
@@ -374,11 +368,9 @@ function initBot() {
             if (canDigBlock && check_limit(block.position)) {
                 await dig_promise(block);
             }
-            await (delay(400))
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
                 await dig_promise(belowBlock);
             }
-            await (delay(400))
 
 
 
