@@ -288,7 +288,7 @@ function initBot() {
         bot.chat("/fix all")
         let pos = bot.entity.position
         let stuckBlock = bot.blockAt(pos)
-        if (stuckBlock.material != undefined || lastPosition == bot.entity.position) {
+        if (stuckBlock.material != undefined) {
             console.log("Bot seems stuck.. restarting..")
             sell_dirt()
         }
