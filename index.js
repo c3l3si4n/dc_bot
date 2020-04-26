@@ -559,7 +559,14 @@ function initBot() {
 
             console.log("Finished.")
         }).catch(() => {
-            return branch_mining();
+            process.on("exit", function() {
+                require("child_process").spawn(process.argv.shift(), process.argv, {
+                    cwd: process.cwd(),
+                    detached: true,
+                    stdio: "inherit"
+                });
+            });
+            process.exit();
         });
 
 
