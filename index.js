@@ -207,7 +207,7 @@ function initBot() {
         let signDirt = vec3(14978, 39, 14992);
         let signCoarsedDirt = vec3(14977, 39, 14992);
         await bot.chat("/warp terra");
-        await delay(5200);
+        await delay(6000);
         let path = await bot.navigate.findPathSync(sellSpot);
 
         bot.navigate.walk(path.path, async(stopReason) => {
@@ -525,7 +525,7 @@ function initBot() {
     async function mine_and_move(current, limit) {
         await dig_line_without_walk(90);
         await dig_line_without_walk(270);
-
+        console.log("MINE_AND_MOVE: ", current, limit)
 
         if (current != limit) {
             console.log('going left.')
@@ -571,7 +571,7 @@ function initBot() {
         return initBot();
     })
 
-    delay(5000).then(() => {
+    delay(10000).then(() => {
         sell_dirt()
     });
 }
