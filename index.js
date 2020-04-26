@@ -72,14 +72,14 @@ bot.on('message', async function(msg) {
         await bot.chat("/register wiggahigga wiggahigga");
         await bot.chat("/login wiggahigga");
         console.log("Username: " + bot.username);
-        await delay(150);
+        await delay(300);
         await bot.setQuickBarSlot(3);
-        await delay(150);
+        await delay(300);
         await bot.activateItem();
-        await delay(150);
+        await delay(300);
         if (bot.currentWindow.title == '{"text":"Servidores"}' && !entered) {
             entered = true;
-            await delay(150);
+            await delay(300);
             let fullPvpSlot = 9;
             await bot.clickWindow(fullPvpSlot, 0, 0);
             await bot.closeWindow(bot.currentWindow);
