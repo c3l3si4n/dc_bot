@@ -547,7 +547,7 @@ function initBot() {
         console.log('Branch Mining...');
 
         console.log("Digging Hole..");
-        dig_hole(start_position).then(() => {
+        dig_hole(start_position).then(async () => {
             await dig_hole(bot.entity.position);
             await dig_hole(bot.entity.position);
             await dig_hole(bot.entity.position);
