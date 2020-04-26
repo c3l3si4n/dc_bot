@@ -312,7 +312,6 @@ function initBot() {
 
         return new Promise(async(resolve) => {
             let limit = 14983;
-            await (delay(2000))
 
 
             let yaw_radian = degrees_to_radians(yaw);
@@ -345,15 +344,12 @@ function initBot() {
             canDigBlock = bot.canDigBlock(block) && check_limit(block.position) && block.type != 0;
             canDigBelowBlock = bot.canDigBlock(belowBlock) && check_limit(belowBlock.position) && block.material != 0;
             if (canDigBlock && check_limit(block.position)) {
-                await (delay(1000))
                 await repeatingDig(block);
-                await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
-                await (delay(1000))
 
             }
 
@@ -367,15 +363,12 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position)) {
-                await (delay(1000))
                 await repeatingDig(block);
-                await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
-                await (delay(1000))
 
             }
 
@@ -389,15 +382,12 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position)) {
-                await (delay(1000))
                 await repeatingDig(block);
-                await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
-                await (delay(1000))
 
             }
 
