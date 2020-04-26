@@ -526,10 +526,10 @@ function initBot() {
         await dig_line_without_walk(90);
         await dig_line_without_walk(270);
 
-        await walk_relative(0, 0, 1);
 
         if (current != limit) {
             console.log('going left.')
+            await walk_relative(0, 0, 1);
             mine_and_move(bot.entity.position.z, limit)
         } else {
             console.log('I am done. Selling my inventory..')
