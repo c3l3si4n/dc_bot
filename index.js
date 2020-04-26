@@ -72,14 +72,14 @@ bot.on('message', async function(msg) {
         await bot.chat("/register wiggahigga wiggahigga");
         await bot.chat("/login wiggahigga");
         console.log("Username: " + bot.username);
-        await delay(300);
+        await delay(150);
         await bot.setQuickBarSlot(3);
-        await delay(300);
+        await delay(150);
         await bot.activateItem();
-        await delay(300);
+        await delay(150);
         if (bot.currentWindow.title == '{"text":"Servidores"}' && !entered) {
             entered = true;
-            await delay(300);
+            await delay(150);
             let fullPvpSlot = 9;
             await bot.clickWindow(fullPvpSlot, 0, 0);
             await bot.closeWindow(bot.currentWindow);
@@ -212,7 +212,7 @@ async function sell_dirt() {
     let signDirt = vec3(14978, 39, 14992);
     let signCoarsedDirt = vec3(14977, 39, 14992);
     await bot.chat("/warp terra");
-    await delay(6000);
+    await delay(5200);
     let path = await bot.navigate.findPathSync(sellSpot);
 
     bot.navigate.walk(path.path, async(stopReason) => {
@@ -567,6 +567,6 @@ async function branch_mining(start_position = vec3(14960, 37, 14983)) {
 
 }
 
-delay(10000).then(() => {
+delay(5000).then(() => {
     sell_dirt()
 });
