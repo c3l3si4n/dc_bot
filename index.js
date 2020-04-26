@@ -132,7 +132,7 @@ function initBot() {
     });
 
     async function repeatingDig(block) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             while (bot.blockAt(block.position).material != undefined) {
                 await dig_promise(block)
             }
