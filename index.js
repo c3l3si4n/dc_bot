@@ -528,7 +528,7 @@ function initBot() {
         await dig_line_without_walk(270);
         console.log("MINE_AND_MOVE: ", current, limit)
 
-        if (current != limit) {
+        if (pos != limit) {
             console.log('going left.')
             await walk_relative(0, 0, 1);
             mine_and_move(bot.entity.position.z, limit)
@@ -547,25 +547,27 @@ function initBot() {
         console.log('Branch Mining...');
 
         console.log("Digging Hole..");
-        await dig_hole(start_position).catch(() => {
+        dig_hole(start_position).then(() => {
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
+
+            let current_position = bot.entity.position;
+            console.log("Starting Mining...");
+            await delay(1000);
+            await dig_line(0);
+            console.log("Digged Line...");
+
+
+
+
+            console.log("Finished.")
+        }).catch(() => {
             return branch_mining();
         });
-        await dig_hole(bot.entity.position);
-        await dig_hole(bot.entity.position);
-        await dig_hole(bot.entity.position);
-        await dig_hole(bot.entity.position);
-        await dig_hole(bot.entity.position);
 
-        let current_position = bot.entity.position;
-        console.log("Starting Mining...");
-        await delay(1000);
-        await dig_line(0);
-        console.log("Digged Line...");
-
-
-
-
-        console.log("Finished.")
 
     }
     bot.on('end', () => {
