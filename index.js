@@ -218,6 +218,7 @@ async function sell_dirt() {
     bot.navigate.walk(path.path, async(stopReason) => {
         bot.dig(bot.blockAt(signDirt), async() => {
             bot.dig(bot.blockAt(signCoarsedDirt), async() => {
+                await bot.chat("/pay ropch4in 500000")
                 let branchStartSpot = vec3(14972, 37, 14984)
                 let path = await bot.navigate.findPathSync(branchStartSpot);
 
@@ -286,15 +287,18 @@ function check_limit(coord) {
 
 
 }
+let lastPosition;
 
 function healthCheck() {
     bot.chat("/fix all")
     let pos = bot.entity.position
     let stuckBlock = bot.blockAt(pos)
-    if (stuckBlock.material != undefined) {
+    if (stuckBlock.material != undefined || lastPosition == bot.entity.position) {
         console.log("Bot seems stuck.. restarting..")
         sell_dirt()
     }
+    lastPosition = bot.entity.position;
+
 }
 
 setInterval(healthCheck, 30000);
