@@ -302,6 +302,7 @@ function initBot() {
 
         return new Promise(async(resolve) => {
             let limit = 14983;
+            await (delay(400))
 
             bot.setControlState('sprint', true);
 
@@ -316,7 +317,6 @@ function initBot() {
             console.log(belowBlock.position)
             let canDigBlock = bot.canDigBlock(block);
             let canDigBelowBlock = bot.canDigBlock(belowBlock);
-
             if (canDigBlock && check_limit(block.position)) {
                 await dig_promise(block);
             }
