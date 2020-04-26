@@ -131,7 +131,16 @@ function initBot() {
 
     });
 
+    async function repeatingDig(block) {
+        return new Promise((resolve, reject) => {
+            while (bot.blockAt(block.position).material != undefined) {
+                await dig_promise(block)
+            }
+            resolve()
+        })
 
+
+    }
 
     function fillGaps(image, iterations, callback) {
         iterations--;
@@ -239,7 +248,7 @@ function initBot() {
                 bot.navigate.walk(pathToHole.path, async(stopReason) => {
                     await bot.look(0, piMinus / 2, true);
                     block = bot.blockInSight();
-                    await dig_promise(block);
+                    await repeatingDig(block);
                     resolve()
                 })
             } else {
@@ -313,20 +322,16 @@ function initBot() {
             let block = await bot.blockAt(blockPosition);
             let belowPosition = vec3(block.position.x, block.position.y - 1, block.position.z);
             let belowBlock = await bot.blockAt(belowPosition);
-            console.log(block.position)
-            console.log(belowBlock.position)
+
             let canDigBlock = bot.canDigBlock(block);
             let canDigBelowBlock = bot.canDigBlock(belowBlock);
             if (canDigBlock && check_limit(block.position)) {
-                await (delay(1000))
-                await dig_promise(block);
-                await (delay(1000))
+                await repeatingDig(block);
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
-                await dig_promise(belowBlock);
-                await (delay(1000))
+                await repeatingDig(belowBlock);
 
             }
 
@@ -341,13 +346,13 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock) && check_limit(belowBlock.position) && block.material != 0;
             if (canDigBlock && check_limit(block.position)) {
                 await (delay(1000))
-                await dig_promise(block);
+                await repeatingDig(block);
                 await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
                 await (delay(1000))
 
             }
@@ -363,13 +368,13 @@ function initBot() {
 
             if (canDigBlock && check_limit(block.position)) {
                 await (delay(1000))
-                await dig_promise(block);
+                await repeatingDig(block);
                 await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
                 await (delay(1000))
 
             }
@@ -385,13 +390,13 @@ function initBot() {
 
             if (canDigBlock && check_limit(block.position)) {
                 await (delay(1000))
-                await dig_promise(block);
+                await repeatingDig(block);
                 await (delay(1000))
 
             }
             if (canDigBelowBlock && check_limit(belowBlock.position)) {
 
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
                 await (delay(1000))
 
             }
@@ -447,11 +452,11 @@ function initBot() {
 
             if (canDigBlock && check_limit(block.position) && block.type != 0) {
                 console.log("Digging Block: ", block.name);
-                await dig_promise(block);
+                await repeatingDig(block);
             }
             if (canDigBelowBlock && check_limit(belowBlock.position) && block.type != 0) {
                 console.log("Digging Block: ", belowBlock.name);
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
             }
 
 
@@ -465,10 +470,10 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position) && block.type != 0) {
-                await dig_promise(block);
+                await repeatingDig(block);
             }
             if (canDigBelowBlock && check_limit(belowBlock.position) && block.type != 0) {
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
             }
             eval(singleDirectionMap[yaw]);
             block = await bot.blockAt(blockPosition);
@@ -480,10 +485,10 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position) && block.type != 0) {
-                await dig_promise(block);
+                await repeatingDig(block);
             }
             if (canDigBelowBlock && check_limit(belowBlock.position) && block.type != 0) {
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
             }
             eval(singleDirectionMap[yaw]);
             block = await bot.blockAt(blockPosition);
@@ -495,10 +500,10 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position) && block.type != 0) {
-                await dig_promise(block);
+                await repeatingDig(block);
             }
             if (canDigBelowBlock && check_limit(belowBlock.position) && block.type != 0) {
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
             }
             eval(singleDirectionMap[yaw]);
             block = await bot.blockAt(blockPosition);
@@ -510,10 +515,10 @@ function initBot() {
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
             if (canDigBlock && check_limit(block.position) && block.type != 0) {
-                await dig_promise(block);
+                await repeatingDig(block);
             }
             if (canDigBelowBlock && check_limit(belowBlock.position) && block.type != 0) {
-                await dig_promise(belowBlock);
+                await repeatingDig(belowBlock);
             }
 
 
