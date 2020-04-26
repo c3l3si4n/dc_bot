@@ -198,15 +198,15 @@ function getColor(colorId) {
         { red: 65, green: 70, blue: 36, alpha: 255 },
         { red: 76, green: 82, blue: 42, alpha: 255 },
         { red: 40, green: 43, blue: 22, alpha: 255 }
-    ]
+    ];
 
-    colorId -= 3 // Seems to get the right color;
+    colorId -= 3; // Seems to get the right color;
 
-    if (!colors[colorId]) return { red: 255, green: 255, blue: 255, alpha: 255 }
+    if (!colors[colorId]) return { red: 255, green: 255, blue: 255, alpha: 255 };
     else return colors[colorId];
 
 }
 
 module.exports = {
     getColor : getColor,
-}
+};
