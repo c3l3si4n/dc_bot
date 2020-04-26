@@ -575,3 +575,5 @@ function initBot() {
         sell_dirt()
     });
 }
+
+initBot();
