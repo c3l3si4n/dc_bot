@@ -523,6 +523,7 @@ function initBot() {
     }
 
     async function mine_and_move(current, limit) {
+        let pos = Math.trunc(current)
         await dig_line_without_walk(90);
         await dig_line_without_walk(270);
         console.log("MINE_AND_MOVE: ", current, limit)
