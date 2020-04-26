@@ -530,9 +530,11 @@ async function mine_and_move(current, limit) {
     await walk_relative(0, 0, 1);
 
     if (current != limit) {
+        console.log('going left.')
         mine_and_move(bot.entity.position.z, limit)
     } else {
-        sell_dirt()
+        console.log('I am done. Selling my inventory..')
+        return sell_dirt()
     }
 }
 
