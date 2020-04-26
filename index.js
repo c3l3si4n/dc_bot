@@ -15,10 +15,10 @@ let vec3 = require('vec3');
 
 function initBot() {
     let bot = mineflayer.createBot({
-        host: 'mc.playdreamcraft.com.br',
+        host: 'girafa.playdreamcraft.com.br',
         port: 25565,
         version: '1.8.9',
-        username: 'LexorPvP_'
+        username: 'jpgatto'
     });
     let dig_promise = util.promisify(bot.dig);
     navigatePlugin(bot);
@@ -29,14 +29,12 @@ function initBot() {
         console.log("[navigation] unable to find path. getting as close as possible");
         bot.navigate.walk(closestPath);
     });
-    bot.navigate.on('arrived', async function() {
 
-    });
     bot.navigate.on('interrupted', function() {
         console.log("[navigation] stopping");
     });
     bot.on("chat", async function(username, message, translate, jsonMsg, matches) {
-
+        console.log(message)
         if (username == 'ropch4in') {
             if (message.includes("vem ca")) {
                 const target = bot.players[username].entity;
@@ -63,7 +61,6 @@ function initBot() {
     bot.on('message', async function(msg) {
         console.log(msg.text);
         if (msg.text.includes('faça o login digitando') || msg.text.includes('favor registre-se')) {
-            bot.setControlState('sprint', true);
             await bot.chat("/register wiggahigga wiggahigga");
             await bot.chat("/login wiggahigga");
             console.log("Username: " + bot.username);
@@ -134,9 +131,6 @@ function initBot() {
 
     });
 
-    function mineLine(start, yaw) { // start,end = [x,y,z]
-
-    }
 
 
     function fillGaps(image, iterations, callback) {
@@ -200,28 +194,35 @@ function initBot() {
             })
         });
     }
-    let branchPlace = [14940, 14950, 14960, 14970]
+    //let branchPlace = [14940, 14950, 14960, 14970]
+    let branchPlace = [14945, 14955, 14965, 14975]
+
     let branchIndex = 3
     async function sell_dirt() {
         let sellSpot = vec3(14978, 38, 14990);
         let signDirt = vec3(14978, 39, 14992);
         let signCoarsedDirt = vec3(14977, 39, 14992);
+        let initialSpot = vec3(14996, 46, 14993);
         await bot.chat("/warp terra");
         await delay(6000);
-        let path = await bot.navigate.findPathSync(sellSpot);
-
+        let path = await bot.navigate.findPathSync(initialSpot);
         bot.navigate.walk(path.path, async(stopReason) => {
-            bot.dig(bot.blockAt(signDirt), async() => {
-                bot.dig(bot.blockAt(signCoarsedDirt), async() => {
-                    await bot.chat("/pay ropch4in 500000")
-                    let branchStartSpot = vec3(14972, 37, 14984)
-                    let path = await bot.navigate.findPathSync(branchStartSpot);
 
-                    bot.navigate.walk(path.path, async(stopReason) => {
-                        return branch_mining()
+            let path = await bot.navigate.findPathSync(sellSpot);
+
+            bot.navigate.walk(path.path, async(stopReason) => {
+                bot.dig(bot.blockAt(signDirt), async() => {
+                    bot.dig(bot.blockAt(signCoarsedDirt), async() => {
+                        await bot.chat("/pay ropch4in 500000")
+                        let branchStartSpot = vec3(14972, 37, 14984)
+                        let path = await bot.navigate.findPathSync(branchStartSpot);
+
+                        bot.navigate.walk(path.path, async(stopReason) => {
+                            return branch_mining()
+                        });
                     });
-                });
 
+                })
             })
         })
     }
@@ -302,9 +303,8 @@ function initBot() {
 
         return new Promise(async(resolve) => {
             let limit = 14983;
-            await (delay(400))
+            await (delay(1000))
 
-            bot.setControlState('sprint', true);
 
             let yaw_radian = degrees_to_radians(yaw);
 
@@ -547,7 +547,10 @@ function initBot() {
         console.log('Branch Mining...');
 
         console.log("Digging Hole..");
-        dig_hole(start_position).then(() => {
+        dig_hole(start_position).then(async() => {
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
+            await dig_hole(bot.entity.position);
             await dig_hole(bot.entity.position);
             await dig_hole(bot.entity.position);
             await dig_hole(bot.entity.position);
@@ -570,9 +573,7 @@ function initBot() {
 
 
     }
-    bot.on('end', () => {
-        return initBot();
-    })
+
 
     delay(10000).then(() => {
         sell_dirt()
