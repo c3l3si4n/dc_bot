@@ -337,11 +337,11 @@ function initBot() {
 
             let canDigBlock = bot.canDigBlock(block);
             let canDigBelowBlock = bot.canDigBlock(belowBlock);
-            if (canDigBlock && check_limit(block.position)) {
+            if (canDigBlock && block && check_limit(block.position)) {
                 await repeatingDig(block);
 
             }
-            if (canDigBelowBlock && check_limit(belowBlock.position)) {
+            if (canDigBelowBlock && block && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
 
@@ -356,11 +356,11 @@ function initBot() {
 
             canDigBlock = bot.canDigBlock(block) && check_limit(block.position) && block.type != 0;
             canDigBelowBlock = bot.canDigBlock(belowBlock) && check_limit(belowBlock.position) && block.material != 0;
-            if (canDigBlock && check_limit(block.position)) {
+            if (canDigBlock && block && check_limit(block.position)) {
                 await repeatingDig(block);
 
             }
-            if (canDigBelowBlock && check_limit(belowBlock.position)) {
+            if (canDigBelowBlock && block && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
 
@@ -375,11 +375,11 @@ function initBot() {
             canDigBlock = bot.canDigBlock(block);
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
-            if (canDigBlock && check_limit(block.position)) {
+            if (canDigBlock && block && check_limit(block.position)) {
                 await repeatingDig(block);
 
             }
-            if (canDigBelowBlock && check_limit(belowBlock.position)) {
+            if (canDigBelowBlock && block && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
 
@@ -394,11 +394,11 @@ function initBot() {
             canDigBlock = bot.canDigBlock(block);
             canDigBelowBlock = bot.canDigBlock(belowBlock);
 
-            if (canDigBlock && check_limit(block.position)) {
+            if (canDigBlock && block && check_limit(block.position)) {
                 await repeatingDig(block);
 
             }
-            if (canDigBelowBlock && check_limit(belowBlock.position)) {
+            if (canDigBelowBlock && block && check_limit(belowBlock.position)) {
 
                 await repeatingDig(belowBlock);
 
