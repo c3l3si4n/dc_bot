@@ -236,7 +236,6 @@ function degrees_to_radians(degrees) {
 }
 
 async function dig_hole(position) {
-    console.log("[d] Searching position: ", position)
     return new Promise(async(resolve, reject) => {
         pathToHole = await bot.navigate.findPathSync(position);
         if (pathToHole.status == 'success') {
@@ -337,15 +336,6 @@ async function dig_line(yaw, callback) {
 
         canDigBlock = bot.canDigBlock(block) && check_limit(block.position) && block.type != 0;
         canDigBelowBlock = bot.canDigBlock(belowBlock) && check_limit(belowBlock.position) && block.material != 0;
-        console.log("[b] ", block.position)
-        console.log("[b] ", belowBlock.position)
-        console.log('[d]', bot.canDigBlock(block))
-        console.log('[d]', check_limit(block.position))
-        console.log('[d]', block.material)
-        console.log('[d]', bot.canDigBlock(belowBlock))
-        console.log('[d]', check_limit(belowBlock.position))
-        console.log('[d]', belowBlock.material)
-        console.log("Are the blocks diggable? ", canDigBlock, canDigBelowBlock)
         if (canDigBlock && check_limit(block.position)) {
             await dig_promise(block);
         }
@@ -364,15 +354,7 @@ async function dig_line(yaw, callback) {
 
         canDigBlock = bot.canDigBlock(block);
         canDigBelowBlock = bot.canDigBlock(belowBlock);
-        console.log("[b] ", block.position)
-        console.log("[b] ", belowBlock.position)
-        console.log('[d]', bot.canDigBlock(block))
-        console.log('[d]', check_limit(block.position))
-        console.log('[d]', block.material)
-        console.log('[d]', bot.canDigBlock(belowBlock))
-        console.log('[d]', check_limit(belowBlock.position))
-        console.log('[d]', belowBlock.material)
-        console.log("Are the blocks diggable? ", canDigBlock, canDigBelowBlock)
+
         if (canDigBlock && check_limit(block.position)) {
             await dig_promise(block);
         }
@@ -390,15 +372,7 @@ async function dig_line(yaw, callback) {
 
         canDigBlock = bot.canDigBlock(block);
         canDigBelowBlock = bot.canDigBlock(belowBlock);
-        console.log("[b] ", block.position)
-        console.log("[b] ", belowBlock.position)
-        console.log('[d]', bot.canDigBlock(block))
-        console.log('[d]', check_limit(block.position))
-        console.log('[d]', block.material)
-        console.log('[d]', bot.canDigBlock(belowBlock))
-        console.log('[d]', check_limit(belowBlock.position))
-        console.log('[d]', belowBlock.material)
-        console.log("Are the blocks diggable? ", canDigBlock, canDigBelowBlock)
+
         if (canDigBlock && check_limit(block.position)) {
             await dig_promise(block);
         }
