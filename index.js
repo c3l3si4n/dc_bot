@@ -6,12 +6,14 @@ const delay = require('delay');
 const utils = require('./util');
 const readline = require("readline");
 const util = require('util');
+const sys = require('sys')
 bots_count = ['botnildo1', 'botnildo2', 'botnildo3', 'botnildo4', 'botnildo5'];
 let entered = false;
 let piMinus = Math.PI * -1;
 var white = Jimp.rgbaToInt(255, 255, 255, 255);
 
 let vec3 = require('vec3');
+let failureCount = 0;
 
 function initBot() {
     let bot = mineflayer.createBot({
@@ -253,6 +255,17 @@ function initBot() {
                 })
             } else {
                 console.log("[!]Path to hole FAILED!")
+                failureCount = failureCount + 1;
+                if (failureCount >= 5) {
+                    process.on("exit", function() {
+                        require("child_process").spawn(process.argv.shift(), process.argv, {
+                            cwd: process.cwd(),
+                            detached: true,
+                            stdio: "inherit"
+                        });
+                    });
+                    process.exit();
+                }
                 reject()
             }
         })
