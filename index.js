@@ -571,7 +571,9 @@ async function branch_mining(start_position = vec3(14960, 37, 14983)) {
     console.log('Branch Mining...');
 
     console.log("Digging Hole..");
-    await dig_hole(start_position);
+    await dig_hole(start_position).catch(() => {
+        return branch_mining();
+    });
     await dig_hole(bot.entity.position);
     await dig_hole(bot.entity.position);
     await dig_hole(bot.entity.position);
