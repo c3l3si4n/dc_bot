@@ -1,0 +1,31 @@
+{
+  "name": "dc_bot",
+  "version": "1.0.0",
+  "description": "bot for mining on dreamcraft",
+  "main": "index.js",
+  "dependencies": {
+    "delay": "^4.3.0",
+    "jimp": "^0.10.3",
+    "mineflayer": "^2.12.0",
+    "mineflayer-navigate": "^0.0.10",
+    "pngjs-image": "^0.11.7",
+    "sleep": "^6.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0"
+  },
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielmatsumoto/dc_bot.git"
+  },
+  "author": "daniel (celesian)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielmatsumoto/dc_bot/issues"
+  },
+  "homepage": "https://github.com/danielmatsumoto/dc_bot#readme"
+}
