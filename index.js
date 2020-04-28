@@ -26,22 +26,23 @@ function initBot() {
   });
   const dig_promise = util.promisify(bot.dig);
   navigatePlugin(bot);
-  bot.navigate.on('pathFound', function (path) {
+  bot.navigate.on('pathFound', function(path) {
     console.log('[navigation] found path. I can get there in ' + path.length + ' moves.');
   });
-  bot.navigate.on('cannotFind', function (closestPath) {
+  bot.navigate.on('cannotFind', function(closestPath) {
     console.log('[navigation] unable to find path. getting as close as possible');
     bot.navigate.walk(closestPath);
   });
 
-  bot.navigate.on('interrupted', function () {
+  bot.navigate.on('interrupted', function() {
     console.log('[navigation] stopping');
   });
-  bot.on('end', function () {
+  bot.on('end', function() {
     console.log('[!] Disconnecting');
     process.exit();
   });
-  bot.on('chat', async function (username, message, translate, jsonMsg, matches) {
+  bot.on('chat', async function(username, message, translate, jsonMsg, matches) {
+    console.log('[chat]', username, ': ', message);
     if (username == 'ropch4in') {
       if (message.includes('vem ca')) {
         const target = bot.players[username].entity;
@@ -53,8 +54,8 @@ function initBot() {
         console.log('Running: ' + cmd);
         await bot.chat(cmd);
       }
-      if (message[0] == '$') {
-        const cmd = message.split('$')[1];
+      if (message[0] == '*') {
+        const cmd = message.split('*')[1];
         console.log('Eval: ' + cmd);
         let output = eval(cmd);
         if (typeof output != 'string') output = String(output);
@@ -63,22 +64,27 @@ function initBot() {
       }
     }
   });
-  bot.on('message', async function (msg) {
-    if (msg.text.includes('faça o login digitando') || msg.text.includes('favor registre-se')) {
+
+  let controlLogin = true;
+  bot.on('message', async function(msg) {
+    console.log('[msg] ', msg.text);
+    if (msg.text.includes('faça o login digitando') || msg.text.includes('favor registre-se') && controlLogin) {
+      controlLogin = false;
       await bot.chat('/register wiggahigga wiggahigga');
       await bot.chat('/login wiggahigga');
       console.log('Username: ' + bot.username);
-      await delay(500);
+      await delay(1000);
       await bot.setQuickBarSlot(3);
-      await delay(500);
+      await delay(1000);
       await bot.activateItem();
-      await delay(500);
+      await delay(1000);
       if (bot.currentWindow.title == '{"text":"Servidores"}' && !entered) {
         entered = true;
         await delay(500);
         const fullPvpSlot = 9;
-        await bot.clickWindow(fullPvpSlot, 0, 0);
-        await bot.closeWindow(bot.currentWindow);
+        await bot.clickWindow(fullPvpSlot, 0, 0, async () => {
+          await bot.closeWindow(bot.currentWindow);
+        });
         console.log('FullPVP 1 entered!');
       }
     }
@@ -87,45 +93,7 @@ function initBot() {
     }
   });
 
-
-  bot._client.on('map', ({ data }) => {
-    if (!data) return;
-
-    const size = Math.sqrt(data.length);
-    if (size != 128) return;
-    const image = PNGImage.createImage(size, size);
-
-    console.log(`Map size is ${size}x${size}`);
-
-    for (let x = 0; x < size; x++) {
-      for (let z = 0; z < size; z++) {
-        const colorId = data[x + (z * size)];
-        image.setAt(x, z, utils.getColor(colorId));
-      }
-    }
-    image.writeImage('map.png', () => {
-      Jimp.read('map.png', (err, captcha) => {
-        if (err) throw err;
-        fillGaps(captcha, 1, (captcha_filled) => {
-          thinOut(captcha_filled, 1, (cleaned_captcha) => {
-            cleaned_captcha.grayscale().write('cleaned.png');
-          });
-        });
-      });
-    });
-
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
-    rl.question('What is the Captcha answer? (cleaned.png) ', function (code) {
-      bot.chat(code);
-      rl.close();
-      console.log('Sent ' + code + ' answer.');
-    });
-    bot._client.on('map', function () { });
-  });
+  const tossStack_promise = util.promisify(bot.tossStack);
 
   async function repeatingDig(block) {
     return new Promise(async (resolve, reject) => {
@@ -136,95 +104,57 @@ function initBot() {
     });
   }
 
-  function fillGaps(image, iterations, callback) {
-    iterations--;
-    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
-      image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
-        const color = image.getPixelColor(x, y);
-        if (color != white) {
-          newImage.setPixelColor(color, x - 1, y - 1);
-          newImage.setPixelColor(color, x, y - 1);
-          newImage.setPixelColor(color, x, y - 1);
-
-          newImage.setPixelColor(color, x - 1, y + 1);
-          newImage.setPixelColor(color, x, y + 1);
-          newImage.setPixelColor(color, x + 1, y + 1);
-
-          newImage.setPixelColor(color, x, y);
-          newImage.setPixelColor(color, x - 1, y);
-          newImage.setPixelColor(color, x + 1, y);
-        }
-        if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
-          if (iterations <= 0) {
-            callback(newImage);
-          } else {
-            fillGaps(newImage, iterations, callback);
-          }
-        }
-      });
-    });
-  }
-
-  function thinOut(image, iterations, callback) {
-    iterations--;
-    new Jimp(image.bitmap.width, image.bitmap.height, white, (err, newImage) => {
-      image.scan(0, 0, image.bitmap.width, image.bitmap.height, function (x, y, idx) {
-        const color = image.getPixelColor(x, y);
-        if (color != white) {
-          const l = image.getPixelColor(x - 1, y);
-          const r = image.getPixelColor(x + 1, y);
-          const t = image.getPixelColor(x, y + 1);
-          const b = image.getPixelColor(x, y - 1);
-
-          const lb = image.getPixelColor(x - 1, y - 1);
-          const lt = image.getPixelColor(x - 1, y + 1);
-          const rt = image.getPixelColor(x + 1, y + 1);
-          const rb = image.getPixelColor(x + 1, y - 1);
-          if (l == white || r == white || t == white || b == white || lb == white || lt == white || rt == white || rb == white) {
-            newImage.setPixelColor(white, x, y);
-          } else {
-            newImage.setPixelColor(color, x, y);
-          }
-        }
-
-        if (x == image.bitmap.width - 1 && y == image.bitmap.height - 1) {
-          if (iterations <= 0) {
-            callback(newImage);
-          } else {
-            thinOut(newImage, iterations, callback);
-          }
-        }
-      });
-    });
-  }
-  // let branchPlace = [14940, 14950, 14960, 14970]
   const branchPlace = eval(args[2]);
 
-  let branchIndex = 3;
-  async function sell_dirt() {
-    const sellSpot = vec3(14978, 38, 14990);
-    const signDirt = vec3(14978, 39, 14992);
-    const signCoarsedDirt = vec3(14977, 39, 14992);
-    const initialSpot = vec3(14996, 46, 14993);
-    await bot.chat('/warp terra');
-    await delay(6000);
-    const path = await bot.navigate.findPathSync(initialSpot);
-    bot.navigate.walk(path.path, async (stopReason) => {
-      const path = await bot.navigate.findPathSync(sellSpot);
-
-      bot.navigate.walk(path.path, async (stopReason) => {
-        bot.dig(bot.blockAt(signDirt), async () => {
-          bot.dig(bot.blockAt(signCoarsedDirt), async () => {
-            await bot.chat('/pay ropch4in 500000');
-            const branchStartSpot = vec3(14972, 37, 14984);
-            const path = await bot.navigate.findPathSync(branchStartSpot);
-
-            bot.navigate.walk(path.path, async (stopReason) => {
-              return branch_mining();
-            });
-          });
-        });
+  async function drop_item(slot) {
+    return new Promise((resolve) => {
+      bot.moveSlotItem(slot, -999, async () => {
+        callback();
       });
+    });
+  }
+
+  async function drop_items() {
+    for await (const item of bot.inventory.slots) {
+      try {
+        if (item) {
+          if (item.slot != 36) {
+            console.log('Chegou aqui...');
+            console.log(item);
+            await drop_item(item.slot);
+          }
+        }
+      } catch (e) {
+        console.log('Error happened on tossing: ', e);
+        process.exit(0);
+      }
+    };
+  }
+
+  async function sell_wood() {
+    const signWood1 = vec3(16931, 39, 16919);
+    const signWood2 = vec3(16932, 39, 16919);
+    const signWood3 = vec3(16933, 39, 16919);
+    const signWood4 = vec3(16936, 39, 16919);
+    const signWood5 = vec3(16937, 39, 16919);
+    const signWood6 = vec3(16938, 39, 16919);
+    const sellSpot = vec3(16937, 38, 16920);
+
+    await bot.chat('/home madeira');
+    await delay(6000);
+    await dig_promise(bot.blockAt(signWood1));
+    await dig_promise(bot.blockAt(signWood2));
+    await dig_promise(bot.blockAt(signWood3));
+    const path = await bot.navigate.findPathSync(sellSpot);
+
+    bot.navigate.walk(path.path, async (stopReason) => {
+      await dig_promise(bot.blockAt(signWood4));
+      await dig_promise(bot.blockAt(signWood5));
+      await dig_promise(bot.blockAt(signWood6));
+      await bot.chat('/pay ropch4in 500000');
+	  const path = await bot.navigate.findPathSync(vec3(16937,37,16926));
+	  bot.navigate.walk(path.path, async(stopReason) => {
+      return await branch_mining(); });
     });
   }
 
@@ -235,23 +165,23 @@ function initBot() {
 
   async function dig_hole(position) {
     return new Promise(async (resolve, reject) => {
-      let pathToHole = await bot.navigate.findPathSync(position);
+      const pathToHole = await bot.navigate.findPathSync(position);
       console.log('[*] Going to position: ', position);
       if (pathToHole.status == 'success') {
         bot.navigate.walk(pathToHole.path, async (stopReason) => {
           await bot.look(0, piMinus / 2, true);
-          let block = bot.blockInSight();
+          const block = bot.blockInSight();
           await repeatingDig(block);
           resolve(bot.entity.position);
         });
       } else {
         position.y -= 1;
-        let pathToHole = await bot.navigate.findPathSync(position);
+        const pathToHole = await bot.navigate.findPathSync(position);
         console.log('[*] Going to position: ', position);
         if (pathToHole.status == 'success') {
           bot.navigate.walk(pathToHole.path, async (stopReason) => {
             await bot.look(0, piMinus / 2, true);
-            let block = bot.blockInSight();
+            const block = bot.blockInSight();
             await repeatingDig(block);
             resolve(bot.entity.position);
           });
@@ -259,7 +189,7 @@ function initBot() {
           console.log('[!]Path to hole FAILED!');
           failureCount = failureCount + 1;
           if (failureCount >= 10) {
-            console.log("[!] Leaving due to failure count being exceeded.")
+            console.log('[!] Leaving due to failure count being exceeded.');
             process.exit();
           }
           reject();
@@ -282,41 +212,25 @@ function initBot() {
   };
 
   function check_limit(coord) {
-    let levelOne = vec3(coord.x, coord.y + 2, coord.z);
-    let levelTwo = vec3(coord.x, coord.y + 1, coord.z);
-    let levelThree = vec3(coord.x, coord.y, coord.z);
-    let levelFour = vec3(coord.x, coord.y - 1, coord.z);
-    let levelFive = vec3(coord.x, coord.y - 2, coord.z);
-    let blockOne = bot.blockAt(levelOne);
-    let blockTwo = bot.blockAt(levelTwo);
-    let blockThree = bot.blockAt(levelThree);
-    let blockFour = bot.blockAt(levelFour);
-    let blockFive = bot.blockAt(levelFive);
-    if (blockOne.material === 'wood' || blockTwo.material === 'wood' || blockThree.material === 'wood' || blockFour.material === 'wood' || blockFive.material == 'wood') {
-      return false;
-    }
-    if (coord.z == 14926) return false;
+    if (coord.z == 16984) return false;
     return true;
   }
-  let lastPosition;
-  let healthBypass = false;
   function healthCheck() {
     bot.chat('/fix all');
     const pos = bot.entity.position;
     const stuckBlock = bot.blockAt(pos);
-    const isAtSurface = pos.z < 14984 && pos.y >= 36;
+    const isAtSurface = pos.z > 16926 && pos.y >= 36;
     if (stuckBlock.material != undefined || isAtSurface) {
       console.log('Bot seems stuck.. restarting..');
-      sell_dirt();
+      process.exit();
     }
-    lastPosition = bot.entity.position;
   }
 
   setInterval(healthCheck, 30000);
 
   async function dig_line(yaw, callback) {
     return new Promise(async (resolve) => {
-      const limit = 14983;
+      const limit = 16984;
 
 
       const yaw_radian = degrees_to_radians(yaw);
@@ -387,7 +301,7 @@ function initBot() {
 
       console.log('[*] Broke 4 lower and upper block.');
       console.log('[*] Looking for position: ', belowPosition);
-      let path = await bot.navigate.findPathSync(belowPosition);
+      const path = await bot.navigate.findPathSync(belowPosition);
       console.log('[*] Got path to last broken block.\nStatus:', path.status);
 
       if (path.status == 'success') {
@@ -530,8 +444,6 @@ function initBot() {
           }
         }
       }
-
-
     });
   }
 
@@ -539,11 +451,9 @@ function initBot() {
     const pos = Math.trunc(current);
     await dig_line_without_walk(90);
     await dig_line_without_walk(270);
-    console.log('MINE_AND_MOVE: ', current, limit);
 
     if (pos != limit) {
-      console.log('going left.');
-      await walk_relative(0, 0, 1);
+      await walk_relative(0, 0, - 1);
       mine_and_move(bot.entity.position.z, limit);
     } else {
       console.log('I am done. Selling my inventory..');
@@ -551,38 +461,24 @@ function initBot() {
     }
   }
 
-  async function branch_mining(start_position = vec3(14960, 37, 14983)) {
+  async function branch_mining(start_position = vec3(16940, 37, 16927)) {
     start_position.x =
       branchPlace[Math.floor(Math.random() * branchPlace.length)];
-
-    console.log('start_position.x = ', start_position.x);
-    console.log('Branch Mining...');
-
-    console.log('Digging Hole..');
-    healthBypass = true;
-    console.log("Arguments", args);
+    console.log('Arguments', args);
     dig_hole(start_position).then(async (newPos) => {
       const digHoleTemplate = 'newPos.y -= 1;await dig_hole(newPos);';
       const digHoleCommand = '(async ()=>{' + digHoleTemplate.repeat(Number(args[1])) + '})()';
-      console.log("Parsed command: " + digHoleCommand);
       await eval(digHoleCommand);
-      console.log('Starting Mining...');
       await delay(1000);
-      await dig_line(0);
-      console.log('Digged Line...');
-
-
-      console.log('Finished.');
+      await dig_line(180);
     }).catch(async (e) => {
-      healthBypass = false;
       console.log('[!] Failing on branch_mining()\nDetails: ', e);
       process.exit();
     });
   }
 
-
   delay(10000).then(() => {
-    sell_dirt();
+    sell_wood();
   });
 }
 
